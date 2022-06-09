@@ -8,6 +8,7 @@ import json
 from google.auth import crypt, jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
+import constants
 
 import os 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -15,8 +16,8 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 client = datastore.Client()
 
-client_id = "1000217580465-vv538d3or9de5qahi8a6qsbcmrufn4ch.apps.googleusercontent.com"
-client_secret = "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"
+client_id = constants.client_id
+client_secret = constants.client_secret
 
 #redirect_uri = "https://schedule-hawk-01.uc.r.appspot.com/oauth"
 redirect_uri = 'http://127.0.0.1:8080/oauth'
