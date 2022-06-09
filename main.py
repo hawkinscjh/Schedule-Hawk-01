@@ -29,13 +29,13 @@ oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 def index():
 	authorization_url, state = oauth.authorization_url('https://accounts.google.com/o/oauth2/auth', access_type="offline", prompt="select_account")
 	
-	return '<h1>Welcome</h1>\n <p>Sign-in to Google <a href=%s>here</a></p>' % authorization_url
+	return render_template('index.html', authorization_url=authorization_url)
+	#return '<h1>Welcome</h1>\n <p>Sign-in to Google <a href=%s>here</a></p>' % authorization_url
 
 @app.route('/oauth')
 def oauthroute():
 	token = oauth.fetch_token('https://accounts.google.com/o/oauth2/token', authorization_response=request.url, client_secret=client_secret)
 	id_info = id_token.verify_oauth2_token(token['id_token'], requests.Request(), client_id, clock_skew_in_seconds=30)
-
 	query = client.query(kind="users")
 	query.add_filter("sub", "=", id_info['sub'])
 	result = list(query.fetch())
@@ -46,7 +46,8 @@ def oauthroute():
 		client.put(new_user)
 		return (("<h1>Account has been created</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 201)
 	elif len(result) == 1:
-		return (("<h1>Welcome back</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 200)
+		return render_template('oauth.html', token=token['id_token'], sub=id_info['sub'], email=id_info['email'])
+		# return (("<h1>Welcome back</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 200)
 
 @app.route('/users', methods=['GET'])
 def get_users():
