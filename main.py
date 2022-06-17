@@ -65,7 +65,7 @@ def get_users():
 @app.route('/users/<uid>', methods=['GET'])
 def get_user_id(uid):
 	if request.method == 'GET':
-
+		
 		token = request.headers.get('Authorization')
 		
 		if token:
@@ -114,7 +114,7 @@ def availability_get_post():
 				return (jsonify({"Error": "Invalid JWT"}), 401)
 		else:
 			return (jsonify({"Error": "JWT not found"}), 401)
-
+		
 		content = request.get_json()
 		
 		if "Type" in content and "Sunday_AM" in content and "Sunday_PM" in content and "Monday_AM" in content and "Monday_PM" in content and "Tuesday_AM" in content and "Tuesday_PM" in content and "Wednesday_AM" in content and "Wednesday_PM" in content and "Thursday_AM" in content and "Thursday_PM" in content and "Friday_AM" in content and "Friday_PM" in content and "Saturday_AM" in content and "Saturday_PM" in content:
@@ -131,6 +131,7 @@ def availability_get_post():
 			return (jsonify({"Error": "The request object is missing at least one of the required attributes"}), 400)
 	
 	elif request.method == 'GET':
+		
 		token = request.headers.get('Authorization')
 		if token:
 			token = token.split(" ")[1]
@@ -201,7 +202,9 @@ def availability_get_post():
 			if next_url:
 				output["next"] = next_url
 
-			return (jsonify(output), 200)
+			
+			#return (jsonify(output), 200)
+			return render_template('avail.html', output=output)
 
 	else:
 		return "Method not allowed", 405
