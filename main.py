@@ -47,7 +47,6 @@ def oauthroute():
 		return (("<h1>Account has been created</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 201)
 	elif len(result) == 1:
 		return render_template('oauth.html', token=token['id_token'], sub=id_info['sub'], email=id_info['email'])
-		# return (("<h1>Welcome back</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 200)
 
 @app.route('/users', methods=['GET'])
 def get_users():
