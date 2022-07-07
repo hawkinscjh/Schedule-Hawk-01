@@ -35,7 +35,8 @@ def index():
 @app.route('/oauth')
 def oauthroute():
 	token = oauth.fetch_token('https://accounts.google.com/o/oauth2/token', authorization_response=request.url, client_secret=client_secret)
-	id_info = id_token.verify_oauth2_token(token['id_token'], requests.Request(), client_id, clock_skew_in_seconds=30)
+	id_info = id_token.verify_oauth2_token(token['id_token'], requests.Request(), client_id)
+	# clock_skew_in_seconds=30
 	query = client.query(kind="users")
 	query.add_filter("sub", "=", id_info['sub'])
 	result = list(query.fetch())
@@ -47,6 +48,12 @@ def oauthroute():
 		return (("<h1>Account has been created</h1>\n	<p>JWT: %s</p>\n	<p>Unique ID (sub): %s</p>\n" % (token['id_token'], id_info['sub'])), 201)
 	elif len(result) == 1:
 		return render_template('oauth.html', token=token['id_token'], sub=id_info['sub'], email=id_info['email'])
+
+@app.route('/full_schedule')
+def get_schedule():
+	if request.method == 'GET':
+		query = client.query(kind="schedule")
+		return render_template('full_schedule.html', schedules=query)
 
 @app.route('/users', methods=['GET'])
 def get_users():
