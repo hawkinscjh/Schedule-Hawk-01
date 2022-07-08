@@ -15,7 +15,7 @@
   <body>
     <!-- Navigating Buttons -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Home</a>
+      <a class="navbar-brand" href="http://127.0.0.1:8080/oauth">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -28,11 +28,17 @@
       </div>
     </nav>
     <h1>Restaurant</h1>
-    <p>
-        {{schedules}}<br>
-    </p>
+    <table>
+      {% for x in data %}
+      <tr>
+        <td>{{ x['Date'] }}</td>
+        <td>{{ x['Day'] }}</td>
+        <td>{{ x['Shift'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
     <div>
-      Download .cvs of the full schedule here
+      Download .cvs of the full schedule
     </div>
   </body>
 </html>

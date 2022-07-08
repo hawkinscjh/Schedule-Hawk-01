@@ -49,12 +49,6 @@ def oauthroute():
 	elif len(result) == 1:
 		return render_template('oauth.html', token=token['id_token'], sub=id_info['sub'], email=id_info['email'])
 
-@app.route('/full_schedule')
-def get_schedule():
-	if request.method == 'GET':
-		query = client.query(kind="schedule")
-		return render_template('full_schedule.html', schedules=query)
-
 @app.route('/users', methods=['GET'])
 def get_users():
 	if request.method == 'GET':
@@ -467,12 +461,13 @@ def schedules_get_post():
 		for e in results:
 			e["id"] = e.key.id
 			e["self"] = request.url + '/' + str(e.key.id)
-		output = {"schedules": results}
-		output['total'] = len(list(query.fetch()))
+		output = results
+		#output['total'] = len(list(query.fetch()))
 		if next_url:
 			output["next"] = next_url
 
-		return (jsonify(output), 200)
+		return render_template('full_schedule.html', data=output)
+		#return (jsonify(output), 200)
 
 	else:
 		return "Method not allowed", 405
