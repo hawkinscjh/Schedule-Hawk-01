@@ -28,8 +28,8 @@ oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 @app.route('/')
 def index():
 	authorization_url, state = oauth.authorization_url('https://accounts.google.com/o/oauth2/auth', access_type="offline", prompt="select_account")
-	
-	return render_template('index.html', authorization_url=authorization_url)
+	return render_template('oauth.html')
+	#return render_template('index.html', authorization_url=authorization_url)
 	#return '<h1>Welcome</h1>\n <p>Sign-in to Google <a href=%s>here</a></p>' % authorization_url
 
 @app.route('/oauth')
@@ -415,19 +415,19 @@ def put_patch_delete_availability(availability_id):
 def schedules_get_post():
 	if request.method == 'POST':
 		
-		token = request.headers.get('Authorization')
+		#token = request.headers.get('Authorization')
 		
-		if token:
-			token = token.split(" ")[1]
+		#if token:
+		#	token = token.split(" ")[1]
 
-			try:
-				id_info = id_token.verify_oauth2_token(token, requests.Request(), client_id)
-				sub = id_info['sub']
-				email = id_info['email']
-			except:
-				return (jsonify({"Error": "Invalid JWT"}), 401)
-		else:
-			return (jsonify({"Error": "JWT not found"}), 401)
+		#	try:
+		#		id_info = id_token.verify_oauth2_token(token, requests.Request(), client_id)
+		#		sub = id_info['sub']
+		#		email = id_info['email']
+		#	except:
+		#		return (jsonify({"Error": "Invalid JWT"}), 401)
+		#else:
+		#	return (jsonify({"Error": "JWT not found"}), 401)
 
 		content = request.get_json()
 		
@@ -442,7 +442,8 @@ def schedules_get_post():
 			client.put(new_schedule)
 			new_schedule['id'] = new_schedule.key.id
 			new_schedule['self'] = request.url + '/' + str(new_schedule.key.id)
-			return (jsonify(new_schedule), 201)
+			return render_template('full_schedule.html', data=new_schedule)
+			#return (jsonify(new_schedule), 201)
 		else:
 			return (jsonify({"Error": "The request object is missing at least one of the required attributes"}), 400)
 	elif request.method == 'GET':

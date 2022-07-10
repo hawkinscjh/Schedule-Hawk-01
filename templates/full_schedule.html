@@ -37,6 +37,13 @@
       </tr>
       {% endfor %}
     </table>
+    <form action = "http://127.0.0.1:8080/schedules" method = "post">
+      <p>Enter Data:</p>
+      <p>Day: <input type = "text" name = "Day" /></p>
+      <p>Date: <input type = "text" name = "Date" /></p>
+      <p>Shift: <input type = "text" name = "Shift" /></p>
+      <p><input type = "submit" value = "submit" /></p>
+    </form>
     <div>
       Download .cvs of the full schedule
     </div>
