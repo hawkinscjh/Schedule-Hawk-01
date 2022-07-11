@@ -11,69 +11,107 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/31149d48b0.js" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <!-- Navigating Buttons -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="http://127.0.0.1:8080/oauth">Home</a>
+      <a class="navbar-brand" href="http://127.0.0.1:8080/">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="#">Full Schedule <span class="sr-only">(current)</span></a>
+          <a class="nav-item nav-link active" href="http://127.0.0.1:8080/schedules">Full Schedule <span class="sr-only">(current)</span></a>
           <a class="nav-item nav-link" href="#">My Profile</a>
           <a class="nav-item nav-link" href="#">User Profiles</a>
         </div>
       </div>
     </nav>
     <h1>Restaurant</h1>
-    <table>
+    <h3 align="center">Schedule</h3>
+    <ul class="list-group list-group-flush" id="schedule">
       {% for x in data %}
-      <tr>
-        <td>{{ x['Date'] }}</td>
-        <td>{{ x['Day'] }}</td>
-        <td>{{ x['Shift'] }}</td>
-      </tr>
+        <tr>{{ x['Date'] }}</tr>
+        <tr>{{ x['Shift'] }}</tr>
+        <tr>{{ x['id'] }}</tr>
+        <br />
+        <button type="button" class="close" onClick="deleteSchedule({{ x['id'] }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </ul>
       {% endfor %}
     </table>
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
-      <h3 align="center">Enter Data:</h3>
+      <h3 align="center">Enter New Schedule:</h3>
       <div class="form group">
-        <label for="Day">Day</label>
-        <input 
-        type="text" 
-        class="form-control" 
-        id="Day" 
-        name="Day" 
-        placeholder="Enter Day"
-        />
+        <label for="Date">Date</label>
+        <input type="date" class="form-control" id="Date" name="Date" placeholder="Enter Date">
       </div>
       <div class="form group">
-        <label for="Date">Day</label>
-        <input 
-        type="date" 
-        class="form-control" 
-        id="Date" 
-        name="Date" 
-        placeholder="Enter Date"
-        />
+        <label for="Shift">Shift</label>
+        <select class="form-control" name="Shift" id="Shift">
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
       </div>
-      <div class="form group">
-        <label for="Shift">Day</label>
-        <input 
-        type="text" 
-        class="form-control" 
-        id="Shift" 
-        name="Shift" 
-        placeholder="Enter Shift"
-        />
-      </div>
-      <br />
+
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <div>
-      Download .cvs of the full schedule
-    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="alert alert-danger alter dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% else %}
+            <div class="alert alert-success alter dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}    
+    {% endwith %}
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='script.js') }}"
+    ></script>
+
   </body>
+  
 </html>
