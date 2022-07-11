@@ -38,11 +38,39 @@
       {% endfor %}
     </table>
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
-      <p>Enter Data:</p>
-      <p>Day: <input type = "text" name = "Day" /></p>
-      <p>Date: <input type = "text" name = "Date" /></p>
-      <p>Shift: <input type = "text" name = "Shift" /></p>
-      <p><input type = "submit" value = "submit" /></p>
+      <h3 align="center">Enter Data:</h3>
+      <div class="form group">
+        <label for="Day">Day</label>
+        <input 
+        type="text" 
+        class="form-control" 
+        id="Day" 
+        name="Day" 
+        placeholder="Enter Day"
+        />
+      </div>
+      <div class="form group">
+        <label for="Date">Day</label>
+        <input 
+        type="date" 
+        class="form-control" 
+        id="Date" 
+        name="Date" 
+        placeholder="Enter Date"
+        />
+      </div>
+      <div class="form group">
+        <label for="Shift">Day</label>
+        <input 
+        type="text" 
+        class="form-control" 
+        id="Shift" 
+        name="Shift" 
+        placeholder="Enter Shift"
+        />
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <div>
       Download .cvs of the full schedule

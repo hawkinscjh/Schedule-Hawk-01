@@ -429,12 +429,15 @@ def schedules_get_post():
 		#else:
 		#	return (jsonify({"Error": "JWT not found"}), 401)
 
-		content = request.get_json()
-		
+		#content = request.get_json()
+
+		content = request.form
+		print(content)
 		if "Day" in content and "Date" in content and "Shift" in content:
 			
 			new_schedule = datastore.entity.Entity(key=client.key("schedule"))
-			new_schedule.update({"Day": content["Day"],"Date": content["Date"],"Shift": content["Shift"], "Availabilities": [], "Unavailabilities": [], "owner": sub, "email": email})
+			#new_schedule.update({"Day": content["Day"],"Date": content["Date"],"Shift": content["Shift"], "Availabilities": [], "Unavailabilities": [], "owner": sub, "email": email})
+			new_schedule.update({"Day": content["Day"],"Date": content["Date"],"Shift": content["Shift"], "Availabilities": [], "Unavailabilities": []})
 			query = client.query(kind='schedule')
 			day_date_shifts = [entity["Day"] + entity["Date"] + entity["Shift"] for entity in query.fetch()]
 			if (content["Day"] + content["Date"] + content["Shift"]) in day_date_shifts:
