@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="UTF-8" />
-    <title>Casey Hawkins: Schedule App</title>    
-</head>
+{% extends "base.html" %} {% block title %}Welcome{% endblock %} {% block content %}
 <body>
     <h1>Welcome</h1>
     <a href="{{authorization_url}}">Sign-in to Google</a>
 </body>
-</html>
+{% endblock %}

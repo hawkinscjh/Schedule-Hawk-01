@@ -41,11 +41,11 @@
           <a class="nav-item nav-link" href="http://127.0.0.1:8080/">Home</a>
           <a class="nav-item nav-link" href="http://127.0.0.1:8080/schedules">Full Schedule</a>
           <a class="nav-item nav-link" href="#">My Profile</a>
-          <a class="nav-item nav-link" href="#">User Profiles</a>
+          <a class="nav-item nav-link" href="http://127.0.0.1:8080/users">User Profiles</a>
         </div>
       </div>
     </nav>
-
+    <h4>Email: {{email}}</h4>
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
     'error' %}
