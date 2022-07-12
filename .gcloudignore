@@ -17,5 +17,4 @@
 __pycache__/
 # Ignored by the build system
 /setup.cfg
-/assignment_7.py
 /main_backup.py
