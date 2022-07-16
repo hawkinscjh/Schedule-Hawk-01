@@ -139,6 +139,7 @@ def profiles():
 			client.put(new_profile)
 			new_profile['id'] = new_profile.key.id
 			new_profile['self'] = request.url + '/' + str(new_profile.key.id)
+			new_profile.update({"id": new_profile.key.id})
 
 			query = client.query(kind="profile")
 			results = list(query.fetch())
@@ -168,10 +169,12 @@ def get_profile_id(pid):
 		avails = list(query1.fetch())
 
 		query2 = client.query(kind="profile")		
-		query2.add_filter("email", "=", "hawkinscjh@gmail.com")
+		
 		results = list(query2.fetch())
 		print(results)
-
+		query2.add_filter("id", "=", pid)
+		results = list(query2.fetch())
+		print(results)
 		return render_template('user_profile.html', avails=avails, data=results)
 	else:
 		return "Method not allowed", 405
