@@ -1,8 +1,8 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
   <body>
     <h1>Restaurant</h1>
-    {% for x in data %}
-    <h3 align="center">{{ x['fName'] }} {{ x['lName'] }}</h3>
+    <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
+    <br />
 
     <h3 align="center">Availability</h3>
     <button type="submit" class="btn btn-primary">Edit</button>
@@ -12,6 +12,4 @@
 
     <h3 align="center">Schedule Changes</h3>
     <button type="submit" class="btn btn-primary">Edit</button>
-    
-    {% endfor %}
-  {% endblock %}
+{% endblock %}

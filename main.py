@@ -164,18 +164,17 @@ def profiles():
 def get_profile_id(pid):
 	if request.method == 'GET':
 			
-		query1 = client.query(kind="availabilities")
-		query1.add_filter("pid", "=", pid)
-		avails = list(query1.fetch())
-
-		query2 = client.query(kind="profile")		
+		#query1 = client.query(kind="availabilities")
+		#query1.add_filter("pid", "=", pid)
+		#avails = list(query1.fetch())
 		
-		results = list(query2.fetch())
-		print(results)
-		query2.add_filter("id", "=", pid)
-		results = list(query2.fetch())
-		print(results)
-		return render_template('user_profile.html', avails=avails, data=results)
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		print(profile['fName'])
+		print(profile['lName'])
+		#print(profile['id'])
+		print(profile['email'])
+		return render_template('user_profile.html', data=profile)
 	else:
 		return "Method not allowed", 405
 
@@ -183,6 +182,7 @@ def get_profile_id(pid):
 def delete_profile():
 	if request.method == 'POST':
 		jsonData = json.loads(request.data)
+		print(jsonData)
 		profile_id = jsonData['profile_id']
 		profile_key = client.key("profile", int(profile_id))
 		profile = client.get(key=profile_key)
