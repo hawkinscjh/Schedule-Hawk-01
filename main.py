@@ -108,9 +108,39 @@ def schedule_get_post(sid):
 
 		return render_template('schedule.html', data=schedule)
 
-	#elif request.method == 'PATCH':
 
+	else:
+		return "Method not allowed", 405
 
+@app.route('/schedules/<sid>/profiles/<pid>', methods=['PUT','DELETE'])
+def add_delete_schedule_profile(sid, pid):
+	if request.method == 'PUT':
+		schedule_key = client.key("schedule", int(sid))
+		schedule = client.get(key=schedule_key)
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		if schedule != None and profile != None:
+			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			profile['Schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			client.put(schedule)
+			client.put(profile)
+			return(jsonify(''), 204)
+		else:
+			return (jsonify({"Error": "The specified schedule and/or profile does not exist"}), 404)
+	if request.method == 'DELETE':
+		schedule_key = client.key("schedule", int(sid))
+		schedule = client.get(key=schedule_key)
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		if schedule != None and profile != None:
+			#if 'Availabilities' in schedule.keys() and len(schedule["Availabilities"]) != 0:
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			client.put(schedule)
+			client.put(profile)
+			return(jsonify(''),204)
+		else:
+			return (jsonify({"Error": "No schedule with this schedule_id is associated with the profile with this profile_id"}), 404)
 	else:
 		return "Method not allowed", 405
 
