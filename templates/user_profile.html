@@ -5,7 +5,11 @@
     <br />
 
     <h4>Schedule</h4>
-    {{ data['Schedule'] }}
+    {% for x in data['Schedule'] %}
+      <tr>{{ x['Date'] }}</tr>
+      <tr>{{ x['Shift'] }}</tr>
+      <br />
+    {% endfor %}
 
     <h4>Availability</h4>
     <button type="submit" class="btn btn-primary">Edit</button>

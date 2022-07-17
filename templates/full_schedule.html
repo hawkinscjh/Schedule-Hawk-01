@@ -11,6 +11,17 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <br />
+        Working:
+        {% for profile in x['Working'] %}
+          <br />
+          <tr>{{ profile['fName'] }}</tr>
+          <tr>{{ profile['lName'] }}</tr>
+          <tr>{{ profile['id'] }}</tr>
+
+        {% endfor %}
+
+        
+        <br />
       </ul>
       {% endfor %}
     </table>
