@@ -1,8 +1,23 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
   <body>
     <h1>Restaurant</h1>
-    <h3 align="center">{{ data['Date'] }} {{ data['Shift'] }}</h3>
+    <h3 align="center">{{ schedule['Date'] }} {{ schedule['Shift'] }}</h3>
+    <h3>Add to schedule:</h3>
+    {% for x in profiles %}
+      <ul class="list-group list-group-item" id="profiles">
+        <tr>{{ x['fName'] }}</tr>
+        <tr>{{ x['lName'] }}</tr>
+        <tr>{{ x['email'] }}</tr>
+        <tr>{{ x['phone'] }}</tr>
+        <tr>{{ x['id'] }}</tr>
+        <button type="button" class="submit" onClick="addScheduleProfile({{ schedule['id'] }}, {{ x['id'] }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </ul>
+      <br />
+    {% endfor %}
     <h3>Scheduled to work</h3> 
-    
+    <p>{{ schedule['Working'] }}</p>
+
   </body>
 {% endblock %}

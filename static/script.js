@@ -23,3 +23,12 @@ function deleteProfile(profile_id) {
     window.location.href = "/profiles";
   }
 };
+
+function addScheduleProfile(schedule_id, profile_id) {
+    fetch("/schedules/<schedule_id>/profiles/<profile_id>", {
+      method: "PUT",
+      body: JSON.stringify({ schedule_id: schedule_id, profile_id: profile_id }),
+    }).then((_res) => {
+      window.location.href = "/schedules/<schedule_id>";
+    });
+};

@@ -54,6 +54,10 @@ def oauthroute():
 
 @app.route('/schedules', methods=['POST','GET', "PUT", "PATCH"])
 def schedules_get_post():
+
+	query = client.query(kind="profile")
+	profiles = list(query.fetch())
+
 	if request.method == 'POST':
 	
 		content = request.form
@@ -78,7 +82,7 @@ def schedules_get_post():
 			query.order = ["Date"]
 			results = list(query.fetch())
 			
-			return render_template('full_schedule.html', data=results)
+			return render_template('full_schedule.html', data=results, profiles=profiles)
 		else:
 			flash("Schedule is missing a required attribute", category='error')
 			query = client.query(kind="schedule")
@@ -100,13 +104,19 @@ def schedules_get_post():
 
 @app.route('/schedules/<sid>', methods=['POST','GET', "PUT", "PATCH"])
 def schedule_get_post(sid):
+
+	query = client.query(kind="profile")
+	profiles = list(query.fetch())
 	
 	if request.method == 'GET':
 		
 		schedule_key = client.key("schedule", int(sid))
 		schedule = client.get(key=schedule_key)
 
-		return render_template('schedule.html', data=schedule)
+		query = client.query(kind="profile")
+		profiles = list(query.fetch())
+
+		return render_template('schedule.html', schedule=schedule, profiles=profiles)
 
 
 	else:
@@ -133,7 +143,6 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			#if 'Availabilities' in schedule.keys() and len(schedule["Availabilities"]) != 0:
 			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
 			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
