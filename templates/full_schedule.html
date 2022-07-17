@@ -6,6 +6,7 @@
       <ul class="list-group list-group-item" id="schedule">
         <tr>{{ x['Date'] }}</tr>
         <tr>{{ x['Shift'] }}</tr>
+        <a href="http://127.0.0.1:8080/schedules/{{ x['id'] }}">Edit</a>
         <button type="button" class="close" onClick="deleteSchedule({{ x['id'] }})">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -30,4 +31,4 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </body>
-  {% endblock %}
+{% endblock %}

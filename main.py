@@ -19,13 +19,8 @@ client = datastore.Client()
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
-#session.init_app(app)
-
-#client_id = constants.client_id
-#client_secret = constants.client_secret
-
-client_id = "1000217580465-vv538d3or9de5qahi8a6qsbcmrufn4ch.apps.googleusercontent.com"
-client_secret = "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"
+client_id = constants.client_id
+client_secret = constants.client_secret
 
 #redirect_uri = "https://schedule-hawk-01.uc.r.appspot.com/oauth"
 redirect_uri = 'http://127.0.0.1:8080/oauth'
@@ -66,7 +61,7 @@ def schedules_get_post():
 		if content["Date"] != '' and content["Shift"] != '':
 			
 			new_schedule = datastore.entity.Entity(key=client.key("schedule"))
-			new_schedule.update({"Date": content["Date"],"Shift": content["Shift"]})
+			new_schedule.update({"Date": content["Date"],"Shift": content["Shift"], "Working": []})
 			query = client.query(kind='schedule')
 			date_shifts = [entity["Date"] + entity["Shift"] for entity in query.fetch()]
 			if (content["Date"] + content["Shift"]) in date_shifts:
@@ -96,6 +91,25 @@ def schedules_get_post():
 		results = list(query.fetch())
 
 		return render_template('full_schedule.html', data=results)
+
+	#elif request.method == 'PATCH':
+
+
+	else:
+		return "Method not allowed", 405
+
+@app.route('/schedules/<sid>', methods=['POST','GET', "PUT", "PATCH"])
+def schedule_get_post(sid):
+	
+	if request.method == 'GET':
+		
+		schedule_key = client.key("schedule", int(sid))
+		schedule = client.get(key=schedule_key)
+
+		return render_template('schedule.html', data=schedule)
+
+	#elif request.method == 'PATCH':
+
 
 	else:
 		return "Method not allowed", 405
