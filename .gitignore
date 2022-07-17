@@ -1,6 +1,3 @@
-_pycache
-credentials.json
-token.json
+__pycache__
 quickstart.py
-.gcloudignore
 constants.py
