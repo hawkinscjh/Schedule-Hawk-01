@@ -122,7 +122,7 @@ def schedule_get_post(sid):
 	else:
 		return "Method not allowed", 405
 
-@app.route('/schedules/<sid>/profiles/<pid>', methods=['PUT','DELETE'])
+@app.route('/schedules/<sid>/profiles/<pid>', methods=['PUT','DELETE', 'POST'])
 def add_delete_schedule_profile(sid, pid):
 	if request.method == 'PUT':
 		schedule_key = client.key("schedule", int(sid))
@@ -134,7 +134,15 @@ def add_delete_schedule_profile(sid, pid):
 			profile['Schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
-			return(jsonify(''), 204)
+			
+			schedule_key = client.key("schedule", int(sid))
+			schedule = client.get(key=schedule_key)
+
+			query = client.query(kind="profile")
+			profiles = list(query.fetch())
+
+			return render_template('schedule.html', schedule=schedule, profiles=profiles)
+
 		else:
 			return (jsonify({"Error": "The specified schedule and/or profile does not exist"}), 404)
 	if request.method == 'DELETE':
@@ -147,7 +155,33 @@ def add_delete_schedule_profile(sid, pid):
 			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
-			return(jsonify(''),204)
+			schedule_key = client.key("schedule", int(sid))
+			schedule = client.get(key=schedule_key)
+
+			query = client.query(kind="profile")
+			profiles = list(query.fetch())
+
+			return render_template('schedule.html', schedule=schedule, profiles=profiles)
+		else:
+			return (jsonify({"Error": "No schedule with this schedule_id is associated with the profile with this profile_id"}), 404)
+	if request.method == 'POST':
+		schedule_key = client.key("schedule", int(sid))
+		schedule = client.get(key=schedule_key)
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		if schedule != None and profile != None:
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			client.put(schedule)
+			client.put(profile)
+
+			schedule_key = client.key("schedule", int(sid))
+			schedule = client.get(key=schedule_key)
+
+			query = client.query(kind="profile")
+			profiles = list(query.fetch())
+
+			return render_template('schedule.html', schedule=schedule, profiles=profiles)
 		else:
 			return (jsonify({"Error": "No schedule with this schedule_id is associated with the profile with this profile_id"}), 404)
 	else:
@@ -181,7 +215,7 @@ def profiles():
 		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
 			
 			new_profile = datastore.entity.Entity(key=client.key("profile"))
-			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"]})
+			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "Schedule": []})
 			query = client.query(kind='profile')
 			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
 			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:

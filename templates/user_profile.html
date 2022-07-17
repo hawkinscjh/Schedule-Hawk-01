@@ -4,12 +4,16 @@
     <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
     <br />
 
-    <h3 align="center">Availability</h3>
-    <button type="submit" class="btn btn-primary">Edit</button>
+    <h4>Schedule</h4>
+    {{ data['Schedule'] }}
 
-    <h3 align="center">Request Offs</h3>
+    <h4>Availability</h4>
     <button type="submit" class="btn btn-primary">Edit</button>
-
-    <h3 align="center">Schedule Changes</h3>
+    <br />
+    <h4>Request Offs</h4>
     <button type="submit" class="btn btn-primary">Edit</button>
+    <br />
+    <h4>Schedule Changes</h4>
+    <button type="submit" class="btn btn-primary">Edit</button>
+    <br />
 {% endblock %}

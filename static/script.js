@@ -25,10 +25,23 @@ function deleteProfile(profile_id) {
 };
 
 function addScheduleProfile(schedule_id, profile_id) {
-    fetch("/schedules/<schedule_id>/profiles/<profile_id>", {
+    fetch("/schedules/"+schedule_id+"/profiles/"+profile_id, {
       method: "PUT",
       body: JSON.stringify({ schedule_id: schedule_id, profile_id: profile_id }),
     }).then((_res) => {
-      window.location.href = "/schedules/<schedule_id>";
+      window.location.href = "/schedules/"+schedule_id;
     });
+};
+
+function deleteScheduleProfile(schedule_id, profile_id) {
+  if (confirm("Remove profile from schedule?") == true) {
+  fetch("/schedules/"+schedule_id+"/profiles/"+profile_id, {
+    method: "POST",
+    body: JSON.stringify({ schedule_id: schedule_id, profile_id: profile_id }),
+  }).then((_res) => {
+    window.location.href = "/schedules/"+schedule_id;
+  });
+ } else {
+  window.location.href = "/schedules/"+schedule_id;
+}
 };
