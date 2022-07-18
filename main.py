@@ -122,6 +122,32 @@ def schedule_get_post(sid):
 	else:
 		return "Method not allowed", 405
 
+@app.route('/schedules/delete-schedule', methods=['POST'])
+def delete_schedule():
+	if request.method == 'POST':
+		jsonData = json.loads(request.data)
+		schedule_id = jsonData['schedule_id']
+		schedule_key = client.key("schedule", int(schedule_id))
+		schedule = client.get(key=schedule_key)
+		if schedule == None:
+			return (jsonify({'Error': 'No schedule with this schedule_id exists'}), 404)
+
+		if schedule['Working'] != []:
+			for profile in schedule['Working']:
+				profile_key = client.key("profile", profile['id'])
+				select_profile = client.get(key=profile_key)
+				select_profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+				client.put(select_profile)
+		client.delete(schedule_key)
+
+		query = client.query(kind="schedule")
+		results = list(query.fetch())
+
+		return render_template('full_schedule.html', data=results)
+
+	else:
+		return "Method not allowed", 405
+
 @app.route('/schedules/<sid>/profiles/<pid>', methods=['PUT','DELETE', 'POST'])
 def add_delete_schedule_profile(sid, pid):
 	if request.method == 'PUT':
@@ -130,7 +156,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"], "Schedule": profile['Schedule']})
 			profile['Schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -151,7 +177,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
 			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -170,7 +196,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"]})
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
 			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -187,24 +213,7 @@ def add_delete_schedule_profile(sid, pid):
 	else:
 		return "Method not allowed", 405
 
-@app.route('/schedules/delete-schedule', methods=['POST'])
-def delete_schedule():
-	if request.method == 'POST':
-		jsonData = json.loads(request.data)
-		schedule_id = jsonData['schedule_id']
-		schedule_key = client.key("schedule", int(schedule_id))
-		schedule = client.get(key=schedule_key)
-		if schedule == None:
-			return (jsonify({'Error': 'No schedule with this schedule_id exists'}), 404)
-		client.delete(schedule_key)
 
-		query = client.query(kind="schedule")
-		results = list(query.fetch())
-
-		return render_template('full_schedule.html', data=results)
-
-	else:
-		return "Method not allowed", 405
 
 @app.route('/profiles', methods=['POST','GET', "PUT", "PATCH"])
 def profiles():
@@ -215,7 +224,7 @@ def profiles():
 		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
 			
 			new_profile = datastore.entity.Entity(key=client.key("profile"))
-			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "Schedule": []})
+			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "Schedule": [], "Availability": [], "Request Offs": [], "Schedule Changes": []})
 			query = client.query(kind='profile')
 			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
 			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:
@@ -249,19 +258,34 @@ def profiles():
 
 @app.route('/profiles/<pid>', methods=['GET', 'POST'])
 def get_profile_id(pid):
-	if request.method == 'GET':
-			
-		#query1 = client.query(kind="availabilities")
-		#query1.add_filter("pid", "=", pid)
-		#avails = list(query1.fetch())
-		
+	if request.method == 'GET':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		print(profile['fName'])
-		print(profile['lName'])
-		#print(profile['id'])
-		print(profile['email'])
 		return render_template('user_profile.html', data=profile)
+	else:
+		return "Method not allowed", 405
+
+@app.route('/profiles/edit/<pid>', methods=['GET', 'POST', 'PATCH', 'PUT'])
+def edit_profile_id(pid):
+	if request.method == 'GET':	
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		return render_template('edit_profile.html', data=profile)
+	if request.method == 'PATCH':	
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		return render_template('edit_profile.html', data=profile)
+	elif request.method == 'POST':
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		profile['Availability'].clear()
+		content = request.form
+		#profile.update({"Availability": content["Sunday"], content["Monday"], })
+		#profile.update({"Availability": "Sunday": content["Sunday"], "Monday": content["Monday"], "Tuesday": content["Tuesday"], "Wednesday": content["Wednesday"], "Thursday": content["Thursday"], "Friday": content["Friday"], "Saturday": content["Saturday"]})
+		profile['Availability'].append({"Sunday": content["Sunday"], "Monday": content["Monday"], "Tuesday": content["Tuesday"], "Wednesday": content["Wednesday"], "Thursday": content["Thursday"], "Friday": content["Friday"], "Saturday": content["Saturday"]})
+		client.put(profile)
+
+		return render_template('edit_profile.html', data=profile)
 	else:
 		return "Method not allowed", 405
 
@@ -275,6 +299,14 @@ def delete_profile():
 		profile = client.get(key=profile_key)
 		if profile == None:
 			return (jsonify({'Error': 'No profile with this profile_id exists'}), 404)
+
+		if profile['Schedule'] != []:
+			for schedule in profile['Schedule']:
+				schedule_key = client.key("schedule", schedule['id'])
+				select_schedule = client.get(key=schedule_key)
+				select_schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
+				client.put(select_schedule)
+
 		client.delete(profile_key)
 
 		query = client.query(kind="profile")

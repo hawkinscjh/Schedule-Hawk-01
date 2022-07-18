@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+  <body>
+    <h1>Restaurant</h1>
+    <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
+    <br />
+    <br />
+    <h4>Availability</h4>
+    <form action = "http://127.0.0.1:8080/profiles/edit/{{ data['id'] }}" method = "post">
+      <div class="form group">
+        <label for="Sunday">Sunday</label>
+        <select class="form-control" name="Sunday" id="Sunday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Monday">Monday</label>
+        <select class="form-control" name="Monday" id="Monday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Tuesday">Tuesday</label>
+        <select class="form-control" name="Tuesday" id="Tuesday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Wednesday">Wednesday</label>
+        <select class="form-control" name="Wednesday" id="Wednesday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Thursday">Thursday</label>
+        <select class="form-control" name="Thursday" id="Thursday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Friday">Friday</label>
+        <select class="form-control" name="Friday" id="Friday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <div class="form group">
+        <label for="Saturday">Saturday</label>
+        <select class="form-control" name="Saturday" id="Saturday">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <br />
+    <h4>Request Offs</h4>
+    <br />
+    <h4>Schedule Changes</h4>
+    <br />
+    <a href="http://127.0.0.1:8080/profiles/{{ data['id'] }}">Go back</a>
+
+{% endblock %}
