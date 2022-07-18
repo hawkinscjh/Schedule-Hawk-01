@@ -45,3 +45,16 @@ function deleteScheduleProfile(schedule_id, profile_id) {
   window.location.href = "/schedules/"+schedule_id;
 }
 };
+
+function deleteRequestOff(profile_id, date, shift) {
+  if (confirm("Remove request off from profile?") == true) {
+  fetch("/profiles/delete-requestoff/"+profile_id, {
+    method: "POST",
+    body: JSON.stringify({ profile_id: profile_id, date: date, shift: shift }),
+  }).then((_res) => {
+    window.location.href = "/profiles/requestoffs/"+profile_id;
+  });
+ } else {
+  window.location.href = "/profiles/requestoffs/"+profile_id;
+}
+};

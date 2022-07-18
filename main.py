@@ -136,7 +136,7 @@ def delete_schedule():
 			for profile in schedule['Working']:
 				profile_key = client.key("profile", profile['id'])
 				select_profile = client.get(key=profile_key)
-				select_profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+				select_profile['schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 				client.put(select_profile)
 		client.delete(schedule_key)
 
@@ -156,8 +156,8 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"], "Schedule": profile['Schedule']})
-			profile['Schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"], "schedule": profile['schedule']})
+			profile['schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
 			
@@ -177,8 +177,8 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
-			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
+			profile['schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
 			schedule_key = client.key("schedule", int(sid))
@@ -196,8 +196,8 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
-			profile['Schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
+			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
+			profile['schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
 
@@ -224,7 +224,7 @@ def profiles():
 		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
 			
 			new_profile = datastore.entity.Entity(key=client.key("profile"))
-			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "Schedule": [], "Availability": [], "Request Offs": [], "Schedule Changes": []})
+			new_profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "schedule": [], "availability": [], "requestOffs": [], "scheduleChanges": []})
 			query = client.query(kind='profile')
 			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
 			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:
@@ -265,29 +265,72 @@ def get_profile_id(pid):
 	else:
 		return "Method not allowed", 405
 
-@app.route('/profiles/edit/<pid>', methods=['GET', 'POST', 'PATCH', 'PUT'])
-def edit_profile_id(pid):
+@app.route('/profiles/availability/<pid>', methods=['GET', 'POST', 'PATCH', 'PUT'])
+def edit_availability_profile_id(pid):
 	if request.method == 'GET':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		return render_template('edit_profile.html', data=profile)
+		return render_template('edit_availability_profile.html', data=profile)
 	if request.method == 'PATCH':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		return render_template('edit_profile.html', data=profile)
+		return render_template('edit_availability_profile.html', data=profile)
 	elif request.method == 'POST':
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		profile['Availability'].clear()
+		profile['availability'].clear()
 		content = request.form
-		#profile.update({"Availability": content["Sunday"], content["Monday"], })
-		#profile.update({"Availability": "Sunday": content["Sunday"], "Monday": content["Monday"], "Tuesday": content["Tuesday"], "Wednesday": content["Wednesday"], "Thursday": content["Thursday"], "Friday": content["Friday"], "Saturday": content["Saturday"]})
-		profile['Availability'].append({"Sunday": content["Sunday"], "Monday": content["Monday"], "Tuesday": content["Tuesday"], "Wednesday": content["Wednesday"], "Thursday": content["Thursday"], "Friday": content["Friday"], "Saturday": content["Saturday"]})
+		profile['availability'].append({"Sunday": content["Sunday"], "Monday": content["Monday"], "Tuesday": content["Tuesday"], "Wednesday": content["Wednesday"], "Thursday": content["Thursday"], "Friday": content["Friday"], "Saturday": content["Saturday"]})
 		client.put(profile)
 
-		return render_template('edit_profile.html', data=profile)
+		return render_template('edit_availability_profile.html', data=profile)
 	else:
 		return "Method not allowed", 405
+
+@app.route('/profiles/requestoffs/<pid>', methods=['GET', 'POST', 'PATCH', 'PUT'])
+def edit_requestoffs_profile_id(pid):
+	if request.method == 'GET':	
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		return render_template('edit_requestoffs_profile.html', data=profile)
+	if request.method == 'PATCH':	
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		return render_template('edit_requestoffs_profile.html', data=profile)
+	elif request.method == 'POST':
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		content = request.form
+		profile['requestOffs'].append({"Date": content["Date"], "Shift": content["Shift"]})
+		client.put(profile)
+
+		return render_template('edit_requestoffs_profile.html', data=profile)
+	else:
+		return "Method not allowed", 405
+
+@app.route('/profiles/delete-requestoff', methods=['POST'])
+def delete_requestOff():
+	if request.method == 'POST':
+		jsonData = json.loads(request.data)
+		print(jsonData)
+		profile_id = jsonData['profile_id']
+		profile_key = client.key("profile", int(profile_id))
+		request_date = jsonData['Date']
+		request_shift = jsonData['Shift']
+		profile = client.get(key=profile_key)
+		if profile == None:
+			return (jsonify({'Error': 'No profile with this profile_id exists'}), 404)
+
+		for date in profile['requestOffs']:
+			for shift in profile['requestOffs']:
+				if date == request_date and shift == request_shift:
+					profile['requestOffs'].remove(date)
+			client.put(profile)
+
+		return render_template('edit_requestoffs_profile.html', data=profile)
+
+	else:
+		return "Method not allowed", 405		
 
 @app.route('/profiles/delete-profile', methods=['POST'])
 def delete_profile():
@@ -300,11 +343,11 @@ def delete_profile():
 		if profile == None:
 			return (jsonify({'Error': 'No profile with this profile_id exists'}), 404)
 
-		if profile['Schedule'] != []:
-			for schedule in profile['Schedule']:
+		if profile['schedule'] != []:
+			for schedule in profile['schedule']:
 				schedule_key = client.key("schedule", schedule['id'])
 				select_schedule = client.get(key=schedule_key)
-				select_schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "Schedule": profile["Schedule"]})
+				select_schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
 				client.put(select_schedule)
 
 		client.delete(profile_key)

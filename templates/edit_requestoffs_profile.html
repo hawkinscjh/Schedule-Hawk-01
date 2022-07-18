@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+  <body>
+    <h1>Restaurant</h1>
+    <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
+    <br />
+    <br />
+    <h4>Current Request Offs</h4>
+    {% for x in data['requestOffs'] %}
+      <tr>{{ x['Date'] }}</tr>
+      <tr>{{ x['Shift'] }}</tr>
+      <button type="button" class="close" onClick="deleteRequestOff({{ data['id'] }}, {{ x['Date'] }}, {{ x['Shift'] }})">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <br />
+    {% endfor %}
+    <h4>Edit Request Offs</h4>
+    <form action = "http://127.0.0.1:8080/profiles/requestoffs/{{ data['id'] }}" method = "post">
+      <div class="form group">
+        <label for="Date">Date</label>
+        <input type="date" class="form-control" id="Date" name="Date" placeholder="Enter Date">
+      </div>
+      <div class="form group">
+        <label for="Shift">Shift</label>
+        <select class="form-control" name="Shift" id="Shift">
+          <option value="AM/PM">AM/PM</option>
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br />
+    <a href="http://127.0.0.1:8080/profiles/{{ data['id'] }}">Go back</a>
+
+{% endblock %}

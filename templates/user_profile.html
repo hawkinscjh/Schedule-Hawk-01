@@ -5,14 +5,14 @@
     <br />
 
     <h4>Schedule</h4>
-    {% for x in data['Schedule'] %}
+    {% for x in data['schedule'] %}
       <tr>{{ x['Date'] }}</tr>
       <tr>{{ x['Shift'] }}</tr>
       <br />
     {% endfor %}
     <br />
     <h4>Availability</h4>
-    {% for x in data['Availability'] %}
+    {% for x in data['availability'] %}
       <tr>Sunday: {{ x['Sunday'] }}</tr>
       <br />
       <tr>Monday: {{ x['Monday'] }}</tr>
@@ -28,11 +28,18 @@
       <tr>Saturday: {{ x['Saturday'] }}</tr>
       <br />
     {% endfor %}
+    <a href="http://127.0.0.1:8080/profiles/availability/{{ data['id'] }}">Edit</a>
     <br />
     <h4>Request Offs</h4>
+    {% for x in data['requestOffs'] %}
+      <tr>{{ x['Date'] }}</tr>
+      <tr>{{ x['Shift'] }}</tr>
+      <br />
+    {% endfor %}
+    <a href="http://127.0.0.1:8080/profiles/requestoffs/{{ data['id'] }}">Edit</a>
     <br />
     <h4>Schedule Changes</h4>
     <br />
-    <a href="http://127.0.0.1:8080/profiles/edit/{{ data['id'] }}">Edit</a>
+    <a href="http://127.0.0.1:8080/profiles/requestoffs/{{ data['id'] }}">Edit</a>
 
 {% endblock %}

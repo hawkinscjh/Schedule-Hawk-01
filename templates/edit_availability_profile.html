@@ -4,8 +4,25 @@
     <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
     <br />
     <br />
-    <h4>Availability</h4>
-    <form action = "http://127.0.0.1:8080/profiles/edit/{{ data['id'] }}" method = "post">
+    <h4>Current Availability</h4>
+    {% for x in data['availability'] %}
+      <tr>Sunday: {{ x['Sunday'] }}</tr>
+      <br />
+      <tr>Monday: {{ x['Monday'] }}</tr>
+      <br />
+      <tr>Tuesday: {{ x['Tuesday'] }}</tr>
+      <br />
+      <tr>Wednesday: {{ x['Wednesday'] }}</tr>
+      <br />
+      <tr>Thursday: {{ x['Thursday'] }}</tr>
+      <br />
+      <tr>Friday: {{ x['Friday'] }}</tr>
+      <br />
+      <tr>Saturday: {{ x['Saturday'] }}</tr>
+      <br />
+    {% endfor %}
+    <h4>Change Availability</h4>
+    <form action = "http://127.0.0.1:8080/profiles/availability/{{ data['id'] }}" method = "post">
       <div class="form group">
         <label for="Sunday">Sunday</label>
         <select class="form-control" name="Sunday" id="Sunday">
@@ -64,12 +81,6 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    <br />
-    <h4>Request Offs</h4>
-    <br />
-    <h4>Schedule Changes</h4>
     <br />
     <a href="http://127.0.0.1:8080/profiles/{{ data['id'] }}">Go back</a>
-
 {% endblock %}
