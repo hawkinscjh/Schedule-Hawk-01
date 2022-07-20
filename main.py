@@ -292,40 +292,50 @@ def edit_requestoffs_profile_id(pid):
 	if request.method == 'GET':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		return render_template('edit_requestoffs_profile.html', data=profile)
+		query = client.query(kind="schedule")
+		query.order = ["Date"]
+		schedules = list(query.fetch())
+		return render_template('edit_requestoffs_profile.html', data=profile, schedules=schedules)
 	if request.method == 'PATCH':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		return render_template('edit_requestoffs_profile.html', data=profile)
+		query = client.query(kind="schedule")
+		query.order = ["Date"]
+		schedules = list(query.fetch())
+		return render_template('edit_requestoffs_profile.html', data=profile, schedules=schedules)
 	elif request.method == 'POST':
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
-		content = request.form
-		profile['requestOffs'].append({"Date": content["Date"], "Shift": content["Shift"]})
-		client.put(profile)
+		query = client.query(kind="schedule")
+		query.order = ["Date"]
+		schedules = list(query.fetch())
+		content = request.form.get('Date/Shift')
+		schedule_key = client.key("schedule", int(content))
+		schedule = client.get(key=schedule_key)
+		if {"Date": schedule["Date"], "Shift": schedule["Shift"], "id": content} not in profile['requestOffs']:
+			profile['requestOffs'].append({"Date": schedule["Date"], "Shift": schedule["Shift"], "id": content})
+			client.put(profile)
 
-		return render_template('edit_requestoffs_profile.html', data=profile)
+		return render_template('edit_requestoffs_profile.html', data=profile, schedules=schedules)
 	else:
 		return "Method not allowed", 405
 
-@app.route('/profiles/delete-requestoff', methods=['POST'])
-def delete_requestOff():
+@app.route('/profiles/delete-requestoff/<pid>', methods=['POST'])
+def delete_requestOff(pid):
 	if request.method == 'POST':
 		jsonData = json.loads(request.data)
-		print(jsonData)
 		profile_id = jsonData['profile_id']
+		schedule_id = jsonData['schedule_id']
 		profile_key = client.key("profile", int(profile_id))
-		request_date = jsonData['Date']
-		request_shift = jsonData['Shift']
 		profile = client.get(key=profile_key)
+		
 		if profile == None:
 			return (jsonify({'Error': 'No profile with this profile_id exists'}), 404)
-
 		for date in profile['requestOffs']:
-			for shift in profile['requestOffs']:
-				if date == request_date and shift == request_shift:
-					profile['requestOffs'].remove(date)
-			client.put(profile)
+
+			if int(date['id']) == int(schedule_id):
+				profile['requestOffs'].remove(date)
+				client.put(profile)
 
 		return render_template('edit_requestoffs_profile.html', data=profile)
 
