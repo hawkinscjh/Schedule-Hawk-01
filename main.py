@@ -9,6 +9,7 @@ from google.auth import crypt, jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import constants
+import subprocess
 
 import os 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -27,6 +28,24 @@ redirect_uri = 'http://127.0.0.1:8080/oauth'
 
 scope = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+
+def getSchedule(schedules):
+	"""Load a CSV of the schedule"""
+
+	# save to JSON to microservice directory
+	with open('static/schedule.json', 'w') as outfile:
+		json.dump(schedules, outfile)
+
+	# Declare file name
+	scheduleCSV = f"{schedules['export_location']}.{schedules['export_location']}"
+
+	img = f'<img src="{schedules}">'
+
+	sourcePath = f"{schedules}"
+
+	subprocess.run("python3 schedule_img.py", shell=True)
+
+	return img
 
 
 @app.route('/')
