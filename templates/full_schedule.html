@@ -11,14 +11,15 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <br />
+        {% if x['Working'] %}
         Working:
         {% for profile in x['Working'] %}
           <br />
           <tr>{{ profile['fName'] }}</tr>
           <tr>{{ profile['lName'] }}</tr>
-          <tr>{{ profile['id'] }}</tr>
         {% endfor %}
         <br />
+        {% endif %}
       </ul>
       {% endfor %}
     </table>
@@ -37,6 +38,25 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <form action = "http://127.0.0.1:8080/schedules" method = "post">
+      <h3 align="center">Generate Weekly Schedule:</h3>
+      <div class="form group">
+        <label for="Date">Date</label>
+        <input type="date" class="form-control" id="Date" name="Date" placeholder="Enter Date">
+      </div>
+      <div class="form group">
+        <label for="Shift">Shift</label>
+        <select class="form-control" name="Shift" id="Shift">
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+
+      <button type="button" class="submit" onClick="generateWeeklySchedule()">
+        Submit
+      </button>
     </form>
   </body>
 {% endblock %}

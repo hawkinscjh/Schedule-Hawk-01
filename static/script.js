@@ -61,3 +61,14 @@ function deleteRequestOff(profile_id, schedule_id) {
   window.location.href = "/profiles/requestoffs/"+profile_id;
 }
 };
+
+function generateWeeklySchedule() {
+    today = Date();
+    console.log(today);
+    fetch("/schedules", {
+      method: "POST",
+      body: JSON.stringify({ 'Date': 2022-07-22, 'Shift': "AM" }),
+    }).then((_res) => {
+      window.location.href = "/schedules";
+  });
+};

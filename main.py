@@ -79,7 +79,9 @@ def schedules_get_post():
 
 	if request.method == 'POST':
 	
-		content = request.form
+		#content = request.form
+		content = request.get_json()
+		content["Date"] = Date(content.body.dob)
 		
 		if content["Date"] != '' and content["Shift"] != '':
 			
@@ -101,7 +103,7 @@ def schedules_get_post():
 			query.order = ["Date"]
 			results = list(query.fetch())
 			
-			return render_template('full_schedule.html', data=results, profiles=profiles)
+			return render_template('full_schedule.html', data=results, profiles=profiles, days=7)
 		else:
 			flash("Schedule is missing a required attribute", category='error')
 			query = client.query(kind="schedule")
@@ -112,7 +114,9 @@ def schedules_get_post():
 		query = client.query(kind="schedule")
 		query.order = ["Date"]
 		results = list(query.fetch())
-
+		print(results)
+		json_object = json.dumps(results, indent=4)
+		print(json_object)
 		return render_template('full_schedule.html', data=results)
 
 	#elif request.method == 'PATCH':

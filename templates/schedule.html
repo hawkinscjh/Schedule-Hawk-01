@@ -19,16 +19,17 @@
 
     <h3>Scheduled to work</h3>
     {% for x in schedule['Working'] %}
-    <ul class="list-group list-group-item" id="profiles">
-        <tr>{{ x['fName'] }}</tr>
-        <tr>{{ x['lName'] }}</tr>
-        <tr>{{ x['email'] }}</tr>
-        <tr>{{ x['phone'] }}</tr>
-        <tr>{{ x['id'] }}</tr>
-      <button type="button" class="close" onClick="deleteScheduleProfile({{ schedule['id'] }}, {{ x['id'] }})">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </ul>
+      <ul class="list-group list-group-item" id="profiles">
+          <tr>{{ x['fName'] }}</tr>
+          <tr>{{ x['lName'] }}</tr>
+          <tr>{{ x['email'] }}</tr>
+          <tr>{{ x['phone'] }}</tr>
+          <tr>{{ x['id'] }}</tr>
+        <button type="button" class="close" onClick="deleteScheduleProfile({{ schedule['id'] }}, {{ x['id'] }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </ul>
     {% endfor %}
+    
   </body>
 {% endblock %}
