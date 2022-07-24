@@ -22,6 +22,14 @@
       </ul>
       {% endfor %}
     </table>
+    <br />
+    <h3>Does not work yet...</h3>
+    <form action = "http://127.0.0.1:8080/schedules" method = "post">
+      <button type="button" class="submit" onClick="generateWeeklySchedule()">
+        Generate Weekly Schedule
+      </button>
+    </form>
+    <br />
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
       <h3 align="center">Enter New Schedule:</h3>
       <div class="form group">
@@ -35,18 +43,11 @@
           <option value="PM">PM</option>
         </select>
       </div>
-
+      
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
     <br />
-    <h3>Does not work yet...</h3>
-    <form action = "http://127.0.0.1:8080/schedules" method = "post">
-      <button type="button" class="submit" onClick="generateWeeklySchedule()">
-        Generate Weekly Schedule
-      </button>
-    </form>
-    <br />
+    
 
     <button type="submit">
       <a href="/static/schedule.csv" download="schedule.csv">Download Schedule</a>

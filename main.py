@@ -97,15 +97,15 @@ def schedules_get_post():
 		query.order = ["Date"]
 		results = list(query.fetch())
 
-		out_file = open("static\myfile.json", "w")
-		json.dump(results, out_file, indent = 4, sort_keys=True)
-		out_file.close()
+		with open("static\myfile.json", "w") as f:
+			json.dump(results, f, indent = 4, sort_keys=True)
+		f.close()
 
 		subprocess.run("python3 test.py", shell=True)
 
 		with open("static\schedule.csv", "r") as f:
 			schedule_csv = f.read()
-
+		f.close()
 		
 		return render_template('full_schedule.html', data=results, csv = schedule_csv)
 
