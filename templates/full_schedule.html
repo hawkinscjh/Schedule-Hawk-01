@@ -15,8 +15,7 @@
         Working:
         {% for profile in x['Working'] %}
           <br />
-          <tr>{{ profile['fName'] }}</tr>
-          <tr>{{ profile['lName'] }}</tr>
+          <tr>{{ profile['Name'] }}</tr>
         {% endfor %}
         <br />
         {% endif %}
@@ -40,23 +39,18 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
+    <br />
+    <h3>Does not work yet...</h3>
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
-      <h3 align="center">Generate Weekly Schedule:</h3>
-      <div class="form group">
-        <label for="Date">Date</label>
-        <input type="date" class="form-control" id="Date" name="Date" placeholder="Enter Date">
-      </div>
-      <div class="form group">
-        <label for="Shift">Shift</label>
-        <select class="form-control" name="Shift" id="Shift">
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
-        </select>
-      </div>
-
       <button type="button" class="submit" onClick="generateWeeklySchedule()">
-        Submit
+        Generate Weekly Schedule
       </button>
     </form>
+    <br />
+
+    <button type="submit">
+      <a href="/static/schedule.csv" download="schedule.csv">Download Schedule</a>
+    </button>
+    <br />
   </body>
 {% endblock %}

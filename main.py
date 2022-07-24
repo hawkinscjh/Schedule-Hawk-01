@@ -9,7 +9,9 @@ from google.auth import crypt, jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import constants
+import csv
 import subprocess
+import time
 
 import os 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -28,25 +30,6 @@ redirect_uri = 'http://127.0.0.1:8080/oauth'
 
 scope = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-
-def getSchedule(schedules):
-	"""Load a CSV of the schedule"""
-
-	# save to JSON to microservice directory
-	with open('static/schedule.json', 'w') as outfile:
-		json.dump(schedules, outfile)
-
-	# Declare file name
-	scheduleCSV = f"{schedules['export_location']}.{schedules['export_location']}"
-
-	img = f'<img src="{schedules}">'
-
-	sourcePath = f"{schedules}"
-
-	subprocess.run("python3 schedule_img.py", shell=True)
-
-	return img
-
 
 @app.route('/')
 def index():
@@ -79,9 +62,7 @@ def schedules_get_post():
 
 	if request.method == 'POST':
 	
-		#content = request.form
-		content = request.get_json()
-		content["Date"] = Date(content.body.dob)
+		content = request.form
 		
 		if content["Date"] != '' and content["Shift"] != '':
 			
@@ -109,18 +90,24 @@ def schedules_get_post():
 			query = client.query(kind="schedule")
 			results = list(query.fetch())
 			return render_template('full_schedule.html', data=results)
+
 	elif request.method == 'GET':
 
 		query = client.query(kind="schedule")
 		query.order = ["Date"]
 		results = list(query.fetch())
-		print(results)
-		json_object = json.dumps(results, indent=4)
-		print(json_object)
-		return render_template('full_schedule.html', data=results)
 
-	#elif request.method == 'PATCH':
+		out_file = open("static\myfile.json", "w")
+		json.dump(results, out_file, indent = 4, sort_keys=True)
+		out_file.close()
 
+		subprocess.run("python3 test.py", shell=True)
+
+		with open("static\schedule.csv", "r") as f:
+			schedule_csv = f.read()
+
+		
+		return render_template('full_schedule.html', data=results, csv = schedule_csv)
 
 	else:
 		return "Method not allowed", 405
@@ -179,7 +166,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].append({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"], "schedule": profile['schedule']})
+			schedule['Working'].append({"id": profile.key.id, "Name": profile['fName'] +' '+ profile['lName']})
 			profile['schedule'].append({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -200,7 +187,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
+			schedule['Working'].remove({"id": profile.key.id, "Name": profile['fName'] +' '+ profile['lName']})
 			profile['schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -219,7 +206,7 @@ def add_delete_schedule_profile(sid, pid):
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		if schedule != None and profile != None:
-			schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
+			schedule['Working'].remove({"id": profile.key.id, "Name": profile['fName'] +' '+ profile['lName']})
 			profile['schedule'].remove({"id": schedule.key.id, "Date": schedule["Date"], "Shift": schedule["Shift"]})
 			client.put(schedule)
 			client.put(profile)
@@ -380,7 +367,7 @@ def delete_profile():
 			for schedule in profile['schedule']:
 				schedule_key = client.key("schedule", schedule['id'])
 				select_schedule = client.get(key=schedule_key)
-				select_schedule['Working'].remove({"id": profile.key.id, "fName": profile['fName'], "lName": profile['lName'] ,"email": profile["email"],  "schedule": profile["schedule"]})
+				select_schedule['Working'].remove({"id": profile.key.id, "Name": profile['fName'] +' '+ profile['lName']})
 				client.put(select_schedule)
 
 		client.delete(profile_key)
