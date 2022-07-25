@@ -5,7 +5,9 @@ CSV of the schedule.
 Partner Communication Contract:
 
 Request data by calling jsonToTxt.py after exporting json data to local file named 'myJson.json'
+
 Json format should be in the format of the example shown below.
+
 [
     {
         "items": [
