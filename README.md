@@ -48,7 +48,7 @@ Appointments
 - Doctor: Thursday at 9am 
 - Dentist: Monday 10am 
 
-
+UML Diagram:
 
 ![image](https://user-images.githubusercontent.com/59400213/180667332-f6654a71-b9b4-44db-abfe-63e75131147d.png)
 
