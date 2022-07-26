@@ -101,13 +101,13 @@ def schedules_get_post():
 			json.dump(results, f, indent = 4, sort_keys=True)
 		f.close()
 
-		subprocess.run("python3 test.py", shell=True)
+		subprocess.run("python3 JSONtoCSV.py static\myfile.json", shell=True)
 
-		with open("static\schedule.csv", "r") as f:
-			schedule_csv = f.read()
+		with open("static\myfile.csv", "r") as f:
+			myfile = f.read()
 		f.close()
 		
-		return render_template('full_schedule.html', data=results, csv = schedule_csv)
+		return render_template('full_schedule.html', data=results, csv = myfile)
 
 	else:
 		return "Method not allowed", 405
