@@ -62,12 +62,32 @@ function deleteRequestOff(profile_id, schedule_id) {
 }
 };
 
+var data = new FormData (); 
+//data.append ("Date", "2022-08-11"); 
+//data.append ("Shift", "AM");
+var nowDate = new Date(); 
+
+var month = nowDate.getMonth()+1;
+var date = nowDate.getDate();
+
+if ( month.length != 2 ) {
+  month = '0'+month;
+}
+if ( date.length != 2 ) {
+  date = '0'+date;
+}
+
+var today = nowDate.getFullYear() + '-'+ month + '-' + date ;
+
+data.append ("Date", today); 
+data.append ("Shift", "AM");
+
 function generateWeeklySchedule() {
     today = Date();
     console.log(today);
     fetch("/schedules", {
       method: "POST",
-      body: JSON.stringify({ 'Date': '2022-08-11', 'Shift': "AM" }),
+      body: data,
     }).then((_res) => {
       window.location.href = "/schedules";
   });

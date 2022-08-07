@@ -64,15 +64,15 @@ def schedules_get_post():
 	profiles = list(query.fetch())
 
 	if request.method == 'POST':
+
+		content = request.form
 	
-		#content = request.form
-		content = request.get_json()
 		print("hey2222")
 		
 		if content["Date"] != '' and content["Shift"] != '':
 			
 			new_schedule = datastore.entity.Entity(key=client.key("schedule"))
-			new_schedule.update({"Date": content["Date"],"Shift": content["Shift"], "Working": []})
+			new_schedule.update({"Date": content["Date"], "Shift": content["Shift"], "Working": []})
 			query = client.query(kind='schedule')
 			date_shifts = [entity["Date"] + entity["Shift"] for entity in query.fetch()]
 			if (content["Date"] + content["Shift"]) in date_shifts:
