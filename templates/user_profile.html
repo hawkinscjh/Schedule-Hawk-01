@@ -4,6 +4,13 @@
     <h3 align="center">{{ data['fName'] }} {{ data['lName'] }}</h3>
     <br />
 
+    <h4>Info</h4>
+      <tr>First Name: {{ data['fName'] }}</tr><br />
+      <tr>Last Name: {{ data['lName'] }}</tr><br />
+      <tr>Email: {{ data['email'] }}</tr><br />
+      <tr>Phone: {{ data['phone'] }}</tr><br />
+      <a href="http://127.0.0.1:8080/edit_profiles/{{ data['id'] }}">Edit</a><br />
+
     <h4>Schedule</h4>
     {% for x in data['schedule'] %}
       <tr>{{ x['Date'] }}</tr>

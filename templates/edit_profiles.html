@@ -1,23 +1,19 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
   <body>
     <h1>Restaurant</h1>
-    <h3 align="center">Profiles</h3>
-    {% for x in data %}
+    <h3 align="center">Edit Profile</h3>
       <ul class="list-group list-group-item" id="profiles">
-        <tr>{{ x['fName'] }}</tr>
-        <tr>{{ x['lName'] }}</tr>
-        <tr>ID: {{ x['id'] }}</tr>
-        <a href="http://127.0.0.1:8080/profiles/{{ x['id'] }}">Profile</a>
-        <button type="button" class="close" onClick="deleteProfile({{ x['id'] }})">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <br />
+        <tr>First Name: {{ data['fName'] }}</tr><br />
+        <tr>Last Name: {{ data['lName'] }}</tr><br />
+        <tr>Email: {{ data['email'] }}</tr><br />
+        <tr>Phone: {{ data['phone'] }}</tr><br />
+        <tr>ID: {{ data['id'] }}</tr><br />
       </ul>
-    {% endfor %}
     </table>
     <br />
-    <form action = "http://127.0.0.1:8080/profiles" method = "post">
-      <h3 align="center">Enter New Profile:</h3>
+    <form action = "http://127.0.0.1:8080/edit_profiles/{{ data['id'] }}" method = "post">
+      <h3 align="center">Edit Profile Info:</h3>
+      <h4 align="center">(must fill in all blanks)</h4>
       <div class="form group">
         <label for="fName">First Name</label>
         <input type="text" class="form-control" id="fName" name="fName" placeholder="Enter First Name">

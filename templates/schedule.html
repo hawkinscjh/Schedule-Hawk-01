@@ -7,9 +7,7 @@
       <ul class="list-group list-group-item" id="profiles">
         <tr>{{ x['fName'] }}</tr>
         <tr>{{ x['lName'] }}</tr>
-        <tr>{{ x['email'] }}</tr>
-        <tr>{{ x['phone'] }}</tr>
-        <tr>{{ x['id'] }}</tr>
+        <tr>ID: {{ x['id'] }}</tr>
         <button type="button" class="submit" onClick="addScheduleProfile({{ schedule['id'] }}, {{ x['id'] }})">
           Add
         </button>
@@ -21,7 +19,7 @@
     {% for x in schedule['Working'] %}
       <ul class="list-group list-group-item" id="profiles">
           <tr>{{ x['Name'] }}</tr>
-          <tr>{{ x['id'] }}</tr>
+          <tr>ID: {{ x['id'] }}</tr>
         <button type="button" class="close" onClick="deleteScheduleProfile({{ schedule['id'] }}, {{ x['id'] }})">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -25,7 +25,10 @@ app.config['SESSION_TYPE'] = 'filesystem'
 client_id = constants.client_id
 client_secret = constants.client_secret
 
+# Run app on Google Cloud Platform
 #redirect_uri = "https://schedule-hawk-01.uc.r.appspot.com/oauth"
+
+# Run app locally
 redirect_uri = 'http://127.0.0.1:8080/oauth'
 
 scope = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
@@ -40,7 +43,7 @@ def index():
 def oauthroute():
 	token = oauth.fetch_token('https://accounts.google.com/o/oauth2/token', authorization_response=request.url, client_secret=client_secret)
 	id_info = id_token.verify_oauth2_token(token['id_token'], requests.Request(), client_id)
-	# clock_skew_in_seconds=30
+	
 	query = client.query(kind="user")
 	query.add_filter("sub", "=", id_info['sub'])
 	result = list(query.fetch())
@@ -62,7 +65,9 @@ def schedules_get_post():
 
 	if request.method == 'POST':
 	
-		content = request.form
+		#content = request.form
+		content = request.get_json()
+		print("hey2222")
 		
 		if content["Date"] != '' and content["Shift"] != '':
 			
@@ -97,12 +102,16 @@ def schedules_get_post():
 		query.order = ["Date"]
 		results = list(query.fetch())
 
+		# Run partner's microprocess
+		# Create JSON file with current schedule
 		with open("static\myfile.json", "w") as f:
 			json.dump(results, f, indent = 4, sort_keys=True)
 		f.close()
 
+		# Run JSONtoCSV.py, creating a CSV of the schedule from given JSON
 		subprocess.run("python3 JSONtoCSV.py static\myfile.json", shell=True)
 
+		# Allow users to download the schedule CSV from the schedules tab
 		with open("static\myfile.csv", "r") as f:
 			myfile = f.read()
 		f.close()
@@ -227,7 +236,14 @@ def add_delete_schedule_profile(sid, pid):
 
 @app.route('/profiles', methods=['POST','GET', "PUT", "PATCH"])
 def profiles():
-	if request.method == 'POST':
+	if request.method == 'GET':
+
+		query = client.query(kind="profile")
+		results = list(query.fetch())
+
+		return render_template('profiles.html', data=results)
+
+	elif request.method == 'POST':
 	
 		content = request.form
 		
@@ -256,24 +272,83 @@ def profiles():
 			query = client.query(kind="profile")
 			results = list(query.fetch())
 			return render_template('profiles.html', data=results)
-	elif request.method == 'GET':
-
-		query = client.query(kind="profile")
-		results = list(query.fetch())
-
-		return render_template('profiles.html', data=results)
+	
+	
 
 	else:
 		return "Method not allowed", 405
 
-@app.route('/profiles/<pid>', methods=['GET', 'POST'])
+@app.route('/profiles/<pid>', methods=['GET', 'POST', 'PUT'])
 def get_profile_id(pid):
 	if request.method == 'GET':	
 		profile_key = client.key("profile", int(pid))
 		profile = client.get(key=profile_key)
 		return render_template('user_profile.html', data=profile)
+
+	elif request.method == 'PUT':
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		content = request.form
+	
+		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
+			
+			profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"], "schedule": [], "availability": [], "requestOffs": [], "scheduleChanges": []})
+			query = client.query(kind='profile')
+			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
+			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:
+				flash("User already has a profile", category='error')
+				return render_template('user_profile.html', data=profile)
+			client.put(profile)
+
+		return render_template('user_profile.html', data=profile)
 	else:
 		return "Method not allowed", 405
+
+@app.route('/edit_profiles/<pid>', methods=['GET', 'POST', 'PUT'])
+def edit_profile_id(pid):
+	if request.method == 'PUT':
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		content = request.form
+	
+		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
+			
+			profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"]})
+			query = client.query(kind='profile')
+			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
+			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:
+				flash("User already has a profile", category='error')
+				return render_template('edit_profiles.html', data=profile)
+			client.put(profile)
+
+		return render_template('edit_profiles.html', data=profile)
+
+	elif request.method == 'POST':
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		content = request.form
+
+		if content['fName'] == '' or content["lName"] == '' or content["email"] == '' or content["phone"] == '':
+			flash("Must fill in all blanks", category='error')
+			return render_template('edit_profiles.html', data=profile)
+	
+		if content["fName"] != '' and content["lName"] != '' and content["email"] != '' and content["phone"] != '':
+			
+			profile.update({"fName": content["fName"],"lName": content["lName"], "email": content["email"], "phone": content["phone"]})
+			query = client.query(kind='profile')
+			fName_lName_email_phone = [entity["fName"] + entity["lName"] + entity["email"] + entity["phone"] for entity in query.fetch()]
+			if (content["fName"] + content["lName"] + content["email"] + content["phone"]) in fName_lName_email_phone:
+				flash("User already has a profile", category='error')
+				return render_template('edit_profiles.html', data=profile)
+			client.put(profile)
+
+		return render_template('edit_profiles.html', data=profile)
+
+	elif request.method == 'GET':	
+		profile_key = client.key("profile", int(pid))
+		profile = client.get(key=profile_key)
+		return render_template('edit_profiles.html', data=profile)
+
 
 @app.route('/profiles/availability/<pid>', methods=['GET', 'POST', 'PATCH', 'PUT'])
 def edit_availability_profile_id(pid):

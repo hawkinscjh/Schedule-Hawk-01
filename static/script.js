@@ -67,7 +67,7 @@ function generateWeeklySchedule() {
     console.log(today);
     fetch("/schedules", {
       method: "POST",
-      body: JSON.stringify({ 'Date': 2022-07-22, 'Shift': "AM" }),
+      body: JSON.stringify({ 'Date': '2022-08-11', 'Shift': "AM" }),
     }).then((_res) => {
       window.location.href = "/schedules";
   });
