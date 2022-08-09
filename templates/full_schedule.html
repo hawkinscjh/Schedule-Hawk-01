@@ -23,10 +23,11 @@
       {% endfor %}
     </table>
     <br />
-    <h3>Does not work yet...</h3>
+    <h3>Create full schedule for this month</h3> 
+    <h3>(everyday with both AM and PM shifts)</h3>
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
       <button type="button" class="submit" onClick="generateWeeklySchedule()">
-        Generate Weekly Schedule
+        Submit
       </button>
     </form>
     <br />
@@ -46,9 +47,8 @@
       
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <br />
+    <br /> 
     
-
     <button type="submit">
       <a href="/static/myfile.csv" download="schedule.csv">Download Schedule</a>
     </button>

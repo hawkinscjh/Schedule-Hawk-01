@@ -62,29 +62,56 @@ function deleteRequestOff(profile_id, schedule_id) {
 }
 };
 
-var data = new FormData (); 
-//data.append ("Date", "2022-08-11"); 
-//data.append ("Shift", "AM");
-var nowDate = new Date(); 
-
-var month = nowDate.getMonth()+1;
-var date = nowDate.getDate();
-
-if ( month.length != 2 ) {
-  month = '0'+month;
-}
-if ( date.length != 2 ) {
-  date = '0'+date;
-}
-
-var today = nowDate.getFullYear() + '-'+ month + '-' + date ;
-
-data.append ("Date", today); 
-data.append ("Shift", "AM");
+function daysInMonth(month, year) {
+  return new Date(year, month, 0).getDate();
+};
 
 function generateWeeklySchedule() {
-    today = Date();
-    console.log(today);
+
+  var data = new FormData (); 
+  var nowDate = new Date(); 
+  var month = nowDate.getMonth()+1;
+  var date = nowDate.getDate();
+
+  if ( month.toString().length != 2 ) {
+    month = '0'+month;
+  };
+  if ( date.length != 2 ) {
+    date = '0'+date;
+  };
+
+  var today = nowDate.getFullYear() + '-'+ month + '-' + date;
+
+
+  var daysInMonth = new Date(nowDate.getFullYear(), nowDate.getMonth(), 0).getDate();
+  console.log(daysInMonth)
+
+  for (let i=1; i <= daysInMonth; i++) {
+    var data = new FormData ();
+    var date = i;
+    if ( date.toString().length != 2 ) {
+      date = '0'+date;
+    };
+    var today = nowDate.getFullYear() + '-'+ month + '-' + date;
+    data.append ("Date", today); 
+    data.append ("Shift", "AM");
+
+    fetch("/schedules", {
+      method: "POST",
+      body: data,
+    });
+  };
+
+  for (let i=1; i <= daysInMonth; i++) {
+    var data = new FormData ();
+    var date = i;
+    if ( date.toString().length != 2 ) {
+      date = '0'+date;
+    };
+    var today = nowDate.getFullYear() + '-'+ month + '-' + date;
+    data.append ("Date", today); 
+    data.append ("Shift", "PM");
+
     fetch("/schedules", {
       method: "POST",
       body: data,
@@ -92,3 +119,18 @@ function generateWeeklySchedule() {
       window.location.href = "/schedules";
   });
 };
+};
+
+
+function deleteAllSchedules() {
+  if (confirm("Delete all schedules?") == true) {
+    fetch("/schedules/delete-all-schedules", {
+      method: "POST",
+    }).then((_res) => {
+      window.location.href = "/schedules";
+    });
+  } else {
+    window.location.href = "/schedules";
+  }
+};
+

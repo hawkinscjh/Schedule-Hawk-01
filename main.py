@@ -66,8 +66,6 @@ def schedules_get_post():
 	if request.method == 'POST':
 
 		content = request.form
-	
-		print("hey2222")
 		
 		if content["Date"] != '' and content["Shift"] != '':
 			
