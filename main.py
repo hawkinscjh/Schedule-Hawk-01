@@ -26,10 +26,10 @@ client_id = constants.client_id
 client_secret = constants.client_secret
 
 # Run app on Google Cloud Platform
-#redirect_uri = "https://schedule-hawk-01.uc.r.appspot.com/oauth"
+redirect_uri = "https://schedule-hawk-01.uc.r.appspot.com/oauth"
 
 # Run app locally
-redirect_uri = 'http://127.0.0.1:8080/oauth'
+#redirect_uri = 'http://127.0.0.1:8080/oauth'
 
 scope = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
@@ -232,7 +232,7 @@ def add_delete_schedule_profile(sid, pid):
 
 
 
-@app.route('/profiles', methods=['POST','GET', "PUT", "PATCH"])
+@app.route('/profiles', methods=['POST', 'GET', "PUT", "PATCH"])
 def profiles():
 	if request.method == 'GET':
 
