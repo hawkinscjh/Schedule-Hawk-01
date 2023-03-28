@@ -56,7 +56,6 @@ def oauthroute():
 	elif len(result) == 1:
 		return render_template('oauth.html', token=token['id_token'], sub=id_info['sub'], email=id_info['email'])
 
-
 @app.route('/schedules', methods=['POST','GET', "PUT", "PATCH"])
 def schedules_get_post():
 
