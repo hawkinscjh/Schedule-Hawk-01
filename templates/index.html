@@ -1,6 +1,18 @@
 {% extends "base.html" %} {% block title %}Welcome{% endblock %} {% block content %}
 <body>
-    <h1>Welcome</h1>
-    <a href="{{authorization_url}}">Sign-in to Google</a>
+    <div ><h1>Welcome to Schedule Hawk</h1></div>
+    <p>Schedule Hawk is your solution to organizing and managing your 
+        employees' schedules!
+    </p>
+    <p>Simply sign-in using your Google account, 
+        add your employees using the Profiles tab, and begin adding
+        people to the schedule using the Full Schedule tab.
+    </p>
+    <div class="signin"><a href="{{authorization_url}}">Sign-in to Google</a></div>
+<style>
+    .signin {
+        border-color: black;
+    }
+</style>
 </body>
 {% endblock %}
