@@ -121,7 +121,6 @@ function generateWeeklySchedule() {
 };
 };
 
-
 function deleteAllSchedules() {
   if (confirm("Delete all schedules?") == true) {
     fetch("/schedules/delete-all-schedules", {

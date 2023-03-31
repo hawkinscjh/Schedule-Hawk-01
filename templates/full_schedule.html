@@ -1,28 +1,30 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
   <body>
-    <h1>Restaurant</h1>
-    <h3 align="center">Schedule</h3>
-    {% for x in data %}
-      <ul class="list-group list-group-item" id="schedule">
-        <tr>{{ x['Date'] }}</tr>
-        <tr>{{ x['Shift'] }}</tr>
-        <a href="http://127.0.0.1:8080/schedules/{{ x['id'] }}">Edit</a>
-        <button type="button" class="close" onClick="deleteSchedule({{ x['id'] }})">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <br />
-        {% if x['Working'] %}
-        Working:
-        {% for profile in x['Working'] %}
-          <br />
-          <tr>{{ profile['Name'] }}</tr>
-        {% endfor %}
-        <br />
-        {% endif %}
-      </ul>
-      {% endfor %}
-    </table>
-    <br />
+    <h1>Schedule Hawk</h1>
+    <div class="container-fluid py-2">
+      <h3 class="font-weight-light">Schedule</h3>
+      <div class="d-flex flex-row flex-nowrap overflow-auto">
+        {% for x in data %}
+          <div class="card card-body">
+            <h5 class="card-title">{{ x['Date'] }} {{ x['Shift'] }}</h5>
+            {% if x['Working'] %}
+            <p class="card-text overflow-hidden">
+              {% for profile in x['Working'] %}
+                <ul class="list-group-item">{{ profile['Name'] }}</ul>
+              {% endfor %}
+            </p>
+            {% endif %}
+          <a href="http://127.0.0.1:8080/schedules/{{ x['id'] }}">Edit</a>
+          <!--<button type="button-group" class="close" onClick="deleteSchedule({{ x['id'] }})">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          </div>
+        {% endfor %} 
+      </div>
+    </div>
+
+    </br>
+
     <h3>Create full schedule for this month</h3> 
     <h3>(everyday with both AM and PM shifts)</h3>
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
@@ -31,6 +33,16 @@
       </button>
     </form>
     <br />
+
+    <h3>Create full schedule for next month</h3> 
+    <h3>(everyday with both AM and PM shifts)</h3>
+    <form action = "http://127.0.0.1:8080/schedules" method = "post">
+      <button type="button" class="submit" onClick="generateNextSchedule()">
+        Submit
+      </button>
+    </form>
+    <br />
+    
     <form action = "http://127.0.0.1:8080/schedules" method = "post">
       <h3 align="center">Enter New Schedule:</h3>
       <div class="form group">
@@ -54,4 +66,11 @@
     </button>
     <br />
   </body>
+  <style>
+    .card-body {
+    min-height: 300px;
+    min-width: 300px;
+    margin-right: 5px;
+    }
+  </style>
 {% endblock %}
